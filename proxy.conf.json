@@ -1,0 +1,13 @@
+{
+    "/uploads": {
+      "target": "http://localhost:5046",
+      "secure": false,
+      "changeOrigin": true
+    },
+
+    "/images": {
+    "target": "http://localhost:5046",
+    "secure": false,
+    "changeOrigin": true
+    }
+}

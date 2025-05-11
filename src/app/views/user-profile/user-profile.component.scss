@@ -1,0 +1,430 @@
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  position: relative;
+  
+  button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+      
+    img {
+      width: 40px;
+      height: 40px;
+      filter: var(--icon-filter);
+      transition: filter 0.3s ease;
+    }
+  
+    &:hover {
+      transform: scale(1.05);
+      
+      img {
+        filter: var(--icon-filter) var(--icon-hover-filter);
+      }
+    }
+  }
+  
+  .logo {
+    position: absolute;
+    margin-top: 7rem;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+ 
+main {
+  display: flex;
+  justify-content: center;
+  padding: 9rem;
+  background-color: var(--background-color);
+}
+  
+.user-info-section {
+  min-width: 635px;
+  background-color: var(--user-info-bg);
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  
+  header {
+    display: flex;
+    justify-content: flex-end;
+    padding-bottom: 0;
+    background-color: transparent;
+    
+    .edit-button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      
+      img {
+        width: 30px;
+        height: 30px;
+        filter: var(--icon-filter);
+      }
+      
+      &:hover img {
+        filter: var(--icon-filter) var(--icon-hover-filter);
+      }
+    }
+  }
+}
+
+.input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: var(--input-bg);
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+  
+.input-icon {
+  width: 20px;
+  height: 20px;
+  margin-left: 10px;
+  filter: var(--icon-filter);
+}
+  
+.name-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  margin-bottom: 2rem;
+  padding: 0 60px;
+  
+  .user-photo {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--border-color);
+  }
+  
+  .inputs {
+    width: 100%;
+    box-sizing: border-box;
+      
+    input {
+      width: 100%;
+      border-radius: 5px;
+      border: none;
+      font-family: 'Geologica-Light';
+      font-size: 16px;
+      padding: 10px 15px;
+      background-color: var(--input-bg);
+      color: var(--text-color);
+      
+      &::placeholder {
+        color: var(--readonly-text);
+        opacity: 0.7;
+      }
+    }
+  }
+}
+
+.settings-section {
+  padding: 0 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  label {
+    margin-bottom: 10px;
+    margin-top: 5px;
+    font-family: 'Geologica-Light';
+    font-size: 16px;
+    display: block;
+    color: var(--text-color);
+  }
+  
+  select {
+    width: 100%;
+    border-radius: 5px;
+    font-family: 'Geologica-Light';
+    font-size: 16px;
+    padding: 10px 15px;
+    border: none;
+    appearance: none;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    
+    option {
+      background-color: var(--input-bg);
+      color: var(--text-color);
+    }
+  }
+}
+
+input[readonly],
+select[disabled] {
+  background-color: var(--input-bg) !important;
+  color: var(--readonly-text);
+  opacity: 1 !important;
+  pointer-events: none;
+}
+
+.divider-line {
+  height: 3px;
+  background-color: var(--divider-color);
+  margin: 1rem 0;
+  opacity: 0.7;
+}
+
+.button-section {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+
+  button {
+    background-color: var(--button-color);
+    min-width: 241px;
+    color: var(--white);
+    padding: 18px 55px;
+    font-size: 18px;
+    font-family: 'Geologica-Medium';
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: var(--button-hover-color);
+    }
+  }
+}
+
+.file-upload-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.file-upload-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: var(--button-color);
+  color: var(--white);
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  text-align: center;
+  font-family: 'Geologica-Regular';
+  border: none;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: var(--button-hover-color);
+  }
+}
+
+.file-input {
+  display: none;
+}
+
+.change-password-button {
+  background-color: var(--button-color);
+  color: var(--white);
+  border-radius: 5px;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-family: 'Geologica-Regular';
+  margin-bottom: 10px;
+  border: none;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: var(--button-hover-color);
+  }
+}
+
+@media (max-width: 350px) {
+  header {
+    .logo {
+      width: 50px;
+      margin-top: 1rem;
+    }
+  }
+ 
+  main {
+    padding: 1.5rem;
+    overflow-y: auto;
+  }
+  
+  .user-info-section {
+    min-width: 235px;
+    max-height: 65vh;
+    overflow-y: auto;
+    header {
+      .edit-button {
+        img {
+          width: 20px;
+          height: 20px;
+        }
+      }
+    }
+  }
+
+  .name-section {
+    gap: 10px;
+    padding: 0 20px;
+    margin-bottom: 1rem;
+    
+    .user-photo {
+      width: 100px;
+      height: 100px;
+    }
+    
+    .inputs {
+      width: 100%;
+      box-sizing: border-box;
+        
+      input {
+        font-size: 12px;
+      }
+    }
+  }
+
+  .settings-section {
+    padding: 0 20px;
+    gap: 10px;
+
+    label {
+      margin-bottom: 5px;
+      margin-top: 5px;
+      font-size: 12px;
+    }
+    
+    select {
+      font-size: 12px;
+    }
+  }
+
+  .divider-line {
+    margin: 0.5rem 0;
+  }
+
+  .button-section {
+    margin-bottom: 0.5rem;
+    margin-top: 0.5rem;
+
+    button {
+      min-width: 0;
+      padding: 12px 30px;
+      font-size: 14px;
+    }
+  }
+
+  .file-upload-button {
+    padding: 3px 5px;
+    border-radius: 5px;
+    font-size: 12px;
+  }
+
+  .change-password-button {
+    padding: 5px 15px;
+    margin-bottom: 0.5rem;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 450px) {
+  header {
+    .logo {
+      width: 70px;
+      margin-top: 3rem;
+    }
+  }
+ 
+  main {
+    padding: 4.5rem;
+    overflow-y: auto;
+  }
+  
+  .user-info-section {
+    min-width: 335px;
+    header {
+      .edit-button {
+        img {
+          width: 20px;
+          height: 20px;
+        }
+      }
+    }
+  }
+
+  .name-section {
+    gap: 10px;
+    padding: 0 20px;
+    margin-bottom: 1rem;
+    
+    .user-photo {
+      width: 100px;
+      height: 100px;
+    }
+    
+    .inputs {
+      width: 100%;
+      box-sizing: border-box;
+        
+      input {
+        font-size: 14px;
+      }
+    }
+  }
+
+  .settings-section {
+    padding: 0 20px;
+    gap: 10px;
+
+    label {
+      margin-bottom: 5px;
+      margin-top: 5px;
+      font-size: 14px;
+    }
+    
+    select {
+      font-size: 14px;
+    }
+  }
+
+  .divider-line {
+    margin: 0.5rem 0;
+  }
+
+  .button-section {
+    margin-bottom: 0.5rem;
+    margin-top: 0.5rem;
+
+    button {
+      min-width: 0;
+      padding: 12px 30px;
+      font-size: 16px;
+    }
+  }
+
+  .file-upload-button {
+    padding: 3px 5px;
+    border-radius: 5px;
+    font-size: 14px;
+  }
+
+  .change-password-button {
+    padding: 5px 15px;
+    margin-bottom: 0.5rem;
+    font-size: 14px;
+  }
+}
+
+@media (min-width: 1200px) and (max-width: 1300px) {
+  .user-info-section {
+  max-height: 65vh;
+  overflow-y: auto;
+  }
+}

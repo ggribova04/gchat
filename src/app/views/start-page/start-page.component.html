@@ -1,0 +1,21 @@
+<section class="start-page">
+    <img src="assets/StartPage/logo.svg" alt="Логотип" class="logo">
+    <button class="language-toggle" (click)="toggleLanguage()">
+        {{ languageService.getCurrentLanguage() === 'ru' ? 'RU/EN' : 'RU/EN' }}
+    </button>
+    <section class="button-container">
+        <button class="btn" (click)="openModal('login')">
+            {{ languageService.translate('LOGIN') }}
+        </button>
+        <button class="btn" (click)="openModal('register')">
+            {{ languageService.translate('REGISTER') }}
+        </button>
+    </section>
+    <img src="assets/StartPage/image.svg" alt="Картиночка" class="image">
+
+    <app-auth-modal 
+        *ngIf="isModalOpen"
+        [mode]="modalMode"
+        (close)="closeModal()">
+    </app-auth-modal>
+</section>

@@ -1,0 +1,46 @@
+<body>
+<header>
+    <button (click)="goUserProfile()">
+        <img src="../../assets/user_profile.svg" [alt]="languageService.translate('PROFILE')"/>
+    </button>
+    <img class="logo" src="../../assets/logo.svg" [alt]="languageService.translate('LOGO')" />
+    <button *ngIf="authService.isLoggedIn()" (click)="authService.logout()">
+        <img src="../../assets/exit.svg" [alt]="languageService.translate('LOGOUT')"/>
+    </button>
+</header>
+
+<main>
+    <section class="chat-container">
+        <section class="message-list" #messageContainer>
+          <div 
+            *ngFor="let message of messages" 
+            class="message-item" 
+            [ngClass]="{ 'my-message': message.userId === userId, 'other-message': message.userId !== userId }">
+            <div class="message-avatar">
+              <img *ngIf="message.photoUrl" [src]="message.photoUrl" [alt]="languageService.translate('AVATAR')" class="avatar" loading="lazy"/>
+            </div>
+            <div class="message-content">
+              <div class="message-author">
+                <strong>{{ message.nickName || languageService.translate('UNKNOWN_USER') }}</strong>
+              </div>
+              <div class="message-text">
+                {{ message.displayMessage || message.message }}
+              </div>
+            </div>
+          </div>
+        </section>
+      
+        <section class="message-input">
+          <textarea 
+            [(ngModel)]="messageText"
+            (keydown.enter)="handleKeydown($any($event))"
+            [placeholder]="languageService.translate('INPUT_PLACEHOLDER')"
+            #messageInput
+            rows="1"
+          ></textarea>
+          <button (click)="sendMessage()">{{ languageService.translate('SEND_BUTTON') }}</button>
+        </section>
+    </section>
+</main>
+</body>
+

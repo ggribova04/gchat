@@ -1,1 +1,111 @@
-/* You can add global styles to this file, and also import other style files */
+@use 'fonts.scss' as *;
+
+// Светлая тема
+:root, .light-theme {
+  --button-color: #6F47B2;
+  --scrollbar-color: rgba(255, 255, 255, 0.5) transparent;
+  --button-hover-color: #573492;
+  --user-info-bg: #B3B1FCB2;
+  --white: #FFFFFF;
+  --readonly-text: #000000;
+  --chat-bg: #E3E3F7;
+  --message-bg: #CAC9FD;
+  --my-message-bg: #B3B1FC;
+  --modal-title-color: white;
+  --modal-close-color: white;
+  
+  
+  // Текст и фон
+  --text-color: #3D3D3D;
+  --background-color: #F5F5F5;
+  --input-bg: #FFFFFF;
+  --border-color: #B3B1FC;
+  --divider-color: #FFFFFF;
+  --modal-bg: #B3B1FC;
+  
+  // Иконки
+  --icon-filter: none;
+  --icon-color: #000000;
+  --icon-hover-filter: brightness(0.9);
+}
+
+// Темная тема
+.dark-theme {
+  // Основные цвета
+  --button-color: #8A63C2;
+  --button-hover-color: #6F47B2;
+  --user-info-bg: #0000004b;
+  --white: #1E1E1E;
+  --readonly-text: #E0E0E0;
+  --scrollbar-color: rgba(255, 255, 255, 0.068) transparent;
+  --modal-title-color: var(--text-color);
+  --modal-close-color: var(--text-color);
+  
+  // Текст и фон
+  --text-color: #e0e0e0da;
+  --background-color: #565656;
+  --input-bg: #2D2D2D;
+  --border-color: #B3B1FC;
+  --divider-color: #2D2D2D;
+  --chat-bg: #0000004b;
+  --message-bg: #4f4d7a;
+  --modal-bg: #353535;
+  
+  // Иконки
+  --icon-filter: invert(1) brightness(0.9);
+  --icon-color: #FFFFFF;
+  --icon-hover-filter: brightness(1.2);
+}
+
+// Настройка скролла
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-color);
+}
+
+// Базовые стили для всей страницы
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    overflow: hidden;
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+// Стили для автозаполнения полей
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px white inset !important;
+    -webkit-text-fill-color: #7A7A7A !important;
+}
+
+input:-moz-autofill,
+input:-moz-autofill:hover,
+input:-moz-autofill:focus,
+input:-moz-autofill:active {
+    background-color: white !important;
+    color: #7A7A7A !important;
+}
+
+// Убираем стандартное выделение браузера при фокусе
+input:focus,
+textarea:focus,
+button:focus,
+select:focus {
+    outline: none;
+}
+
+// Плавная смена тем
+* {
+  transition: background-color 0.3s ease, 
+              color 0.3s ease, 
+              border-color 0.3s ease,
+              box-shadow 0.3s ease;
+}

@@ -1,0 +1,158 @@
+$button-color: #6F47B2;
+$button-hover-color: #573492;
+$white: #FFFFFF;
+$modal-bg: #B3B1FC;
+$modal-overlay-bg: rgba(0, 0, 0, 0.6);
+$grey: #7A7A7A;
+$error-color: #F32428;
+
+.auth-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: $modal-overlay-bg;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1rem;
+    box-sizing: border-box;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.auth-modal {
+    width: 100%;
+    max-width: 400px;
+    background: $modal-bg;
+    border-radius: 10px;
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 25px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: $white;
+}
+
+.tabs {
+    display: flex;
+    padding-top: 30px;
+    padding-left: 20px;
+    margin-bottom: -10px;
+}
+
+.tabs button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: $white;
+    font-family: 'Roboto-Medium';
+    font-size: 16px;
+}
+
+.tabs .active {
+    color: $button-color;
+    font-family: 'Roboto-Medium';
+    font-size: 16px;
+    text-decoration-line: underline;
+    text-decoration-style: solid;
+    text-decoration-skip-ink: auto;
+    text-decoration-thickness: 9.5%;
+    text-underline-offset: 25%;
+    text-underline-position: from-font;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.divider-line {
+    height: 2px;
+    background-color: $white;
+    margin: 2rem 0;
+}
+
+.input-container {
+    display: flex;
+    flex-direction: column;
+    padding: 0 20px;
+    gap: 15px;
+}
+
+.input {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: $white;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.input-icon {
+    width: 20px;
+    height: 20px;
+    margin-left: 10px;
+}
+
+.input-container input,
+.input-container select {
+    flex: 1;
+    padding: 14px;
+    font-size: 14px;
+    color: $grey;
+    font-family: 'Roboto-Regular';
+    border: none;
+    background: transparent;
+    outline: none;
+    height: 100%;
+}
+
+.input-container select {
+    appearance: none;
+    background: transparent;
+}
+
+form button {
+    padding: 14px;
+    font-size: 14px;
+    font-family: 'Roboto-Medium';
+    border-radius: 8px;
+    background-color: $button-color;
+    color: $white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin: 0 20px;
+}
+
+form button:hover {
+    background-color: $button-hover-color;
+}
+
+form button:disabled {
+    background-color: $grey;
+    cursor: not-allowed;
+}
+
+.error-message {
+    font-family: 'Roboto-Medium';
+    color: $error-color;
+    padding: 5px;
+    font-size: 14px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
