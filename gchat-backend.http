@@ -1,0 +1,93 @@
+@host = http://localhost:5046
+@token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiY29vbHVzZXIxIiwiZXhwIjoxNzQ2NzAyNzcyLCJpc3MiOiJHQ2hhdCIsImF1ZCI6IkV2ZW50QXBwVXNlcnMifQ.BQKAMRy1_DurmlmCLuURbsjRftBEtbOipHOMeuich_A
+### Регистрация
+POST {{host}}/api/auth/register
+Content-Type: application/json
+
+{
+  "nickName": "язык",
+  "userName": "user3",
+  "password": "Test1234!",
+  "confirmPassword": "Test1234!",
+  "langauge": "en"
+}
+
+### Авторизация
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "userName": "cooluser1",
+  "password": "Test12345!"
+}
+
+### Получить профиль
+GET {{host}}/api/user/profile
+Authorization: {{token}}
+
+### Обновить никнейм
+PUT {{host}}/api/user/nickname
+Authorization: {{token}}
+Content-Type: application/json
+
+{
+  "newNickName": "SuperChatUser"
+}
+
+### Изменить тему
+PUT {{host}}/api/user/theme
+Authorization: {{token}}
+Content-Type: application/json
+
+{
+  "theme": "dark"
+}
+
+### Изменить язык
+PUT {{host}}/api/user/language
+Authorization: {{token}}
+Content-Type: application/json
+
+{
+  "language": "en"
+}
+
+### Сменить пароль
+PUT {{host}}/api/user/change-password
+Authorization: {{token}}
+Content-Type: application/json
+
+{
+  "currentPassword": "Test1234!",
+  "newPassword": "Test12345!",
+  "confirmPassword": "Test12345!"
+}
+
+### Загрузить аватар
+POST {{host}}/api/user/avatar
+Authorization: {{token}}
+Content-Type: multipart/form-data; boundary=MyBoundary
+
+--MyBoundary
+Content-Disposition: form-data; name="file"; filename="avatar.png"
+Content-Type: image/png
+
+< ./avatar.png
+--MyBoundary--
+
+### Удалить ававтар
+DELETE {{host}}/api/user/avatar
+Authorization: {{token}}
+
+### Отправка сообщения
+POST {{host}}/api/chat
+Authorization: {{token}}
+Content-Type: application/json
+{
+  "message": "Похоже работает реально"
+}
+
+### Получение всех собщений
+GET {{host}}/api/chat
+Authorization: {{token}}
+Content-Type: application/json
