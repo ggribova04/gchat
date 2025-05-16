@@ -1,8 +1,7 @@
-import { Injectable, Inject, PLATFORM_ID, OnDestroy } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Injectable, OnDestroy } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, of, Observable, Subscription } from 'rxjs';
-import { catchError, tap, finalize } from 'rxjs/operators';
-import { isPlatformBrowser } from '@angular/common';
+import { catchError, tap, finalize, map } from 'rxjs/operators';
 import { BAD_WORDS } from '../../constants/bad-words';
 
 @Injectable({
@@ -14,18 +13,20 @@ export class LanguageService implements OnDestroy {
   private translations: any = {};
   private translationSub?: Subscription;
 
+  private translationCache = new Map<string, string>();
+  private readonly cacheStorageKey = 'translationCache';
+
   constructor(
-    private http: HttpClient,
-    @Inject(PLATFORM_ID) private platformId: Object
+    private http: HttpClient
   ) {
-    if (isPlatformBrowser(this.platformId)) {
-      this.loadTranslations('ru');
+    this.loadTranslations('ru');
       
-      const savedLang = localStorage.getItem('preferredLanguage');
-      if (savedLang) {
-        this.setLanguage(savedLang);
-      }
+    const savedLang = localStorage.getItem('preferredLanguage');
+    if (savedLang) {
+      this.setLanguage(savedLang);
     }
+
+    this.loadCacheFromStorage();
   }
 
   ngOnDestroy(): void {
@@ -33,138 +34,70 @@ export class LanguageService implements OnDestroy {
       this.translationSub.unsubscribe();
     }
   }
+  // Загружаем кеш из localStorage
+  private loadCacheFromStorage(): void {
+    try {
+      const raw = localStorage.getItem(this.cacheStorageKey);
+      if (raw) {
+        const parsed = JSON.parse(raw) as Record<string, string>;
+        this.translationCache = new Map(Object.entries(parsed));
+      }
+    } catch (error) {
+      console.warn('Failed to load translation cache', error);
+    }
+  }
 
-  // Переводим текст
+  // Сохраняем кеш в localStorage
+  private saveCacheToStorage(): void {
+    try {
+      const obj = Object.fromEntries(this.translationCache);
+      localStorage.setItem(this.cacheStorageKey, JSON.stringify(obj));
+    } catch (error) {
+      console.warn('Failed to save translation cache', error);
+    }
+  }
+  // Переводим текст MyMemory Translation API
   translateText(text: string, targetLang: string): Observable<string> {
-    if (targetLang === 'ru') {
-        return of(text);
+    const cleanedText = text?.trim() ?? '';
+    if (!cleanedText || targetLang === 'ru') {
+      return of(cleanedText);
     }
 
-    // Расширенный словарь переводов (в нижнем регистре)
-    const mockTranslations: {[key: string]: string} = {
-        'привет': 'hello',
-        'здравствуйте': 'hello',
-        'пока': 'goodbye',
-        'до свидания': 'goodbye',
-        'как дела': 'how are you',
-        'как ты': 'how are you',
-        'спасибо': 'thank you',
-        'благодарю': 'thank you',
-    };
+    // Кеширование
+    const cacheKey = `${cleanedText}|${targetLang}`;
 
-    // Сохраняем оригинальный регистр для каждого слова
-    const originalWords = text.split(/(\s+)/).filter(part => part.trim().length > 0);
-    
-    // Проверяем полную фразу
-    const lowerText = text.toLowerCase();
-    if (mockTranslations[lowerText]) {
-        return of(this.applyOriginalCase(text, mockTranslations[lowerText]));
+    // Проверяем кеш перед выполнением запроса
+    if (this.translationCache.has(cacheKey)) {
+      return of(this.translationCache.get(cacheKey)!);
     }
 
-    // Разбиваем на части с сохранением пунктуации
-    const phrases = this.splitIntoSentences(text);
-    let hasTranslation = false;
-    
-    const translatedPhrases = phrases.map(phrase => {
-        const trimmedPhrase = phrase.trim();
-        if (!trimmedPhrase) return phrase;
+    const params = new HttpParams()
+      .set('q', cleanedText)
+      .set('langpair', `ru|${targetLang}`);
+
+    return this.http.get<{responseData: {translatedText: string}}>(
+      '/translate-api/get',
+      { params }
+    ).pipe(
+      map(response => {
+        const translatedText = response.responseData.translatedText;
         
-        const lowerPhrase = trimmedPhrase.toLowerCase();
-        if (mockTranslations[lowerPhrase]) {
-            hasTranslation = true;
-            return this.applyOriginalCase(trimmedPhrase, mockTranslations[lowerPhrase]);
-        }
+        // Сохраняем в кеш перед возвратом
+        this.translationCache.set(cacheKey, translatedText);
+        this.saveCacheToStorage();
         
-        // Попробуем перевести отдельные слова
-        const words = this.splitIntoWords(trimmedPhrase);
-        const translatedWords = words.map(word => {
-            const lowerWord = word.toLowerCase();
-            return mockTranslations[lowerWord] || word;
-        });
-        
-        if (translatedWords.some(w => mockTranslations[w.toLowerCase()])) {
-            hasTranslation = true;
-        }
-        
-        return this.reconstructPhrase(trimmedPhrase, translatedWords);
-    });
-
-    if (!hasTranslation) {
-        return of(`${text} [translated to ${targetLang}]`);
-    }
-
-    const translatedText = translatedPhrases.join(' ');
-    return of(this.fixFinalPunctuation(text, translatedText));
-  }
-
-  private splitIntoSentences(text: string): string[] {
-    // Разбиваем с сохранением пунктуации
-    return text.split(/([!?.,]\s*)/).filter(part => part.trim().length > 0);
-  }
-
-  private splitIntoWords(phrase: string): string[] {
-    // Разбиваем на слова с сохранением апострофов и дефисов
-    return phrase.split(/([\s'-]+)/).filter(part => part.trim().length > 0);
-  }
-
-  private applyOriginalCase(original: string, translated: string): string {
-    if (!original || !translated) return translated;
-    
-    // Полностью сохраняем регистр оригинала
-    if (original === original.toUpperCase()) {
-        return translated.toUpperCase();
-    }
-    
-    if (original === original.toLowerCase()) {
-        return translated.toLowerCase();
-    }
-    
-    if (this.isCapitalized(original)) {
-        return this.capitalizeFirstLetter(translated);
-    }
-    
-    return this.preserveMixedCase(original, translated);
-  }
-
-  private isCapitalized(word: string): boolean {
-    return word[0] === word[0].toUpperCase() && 
-           word.slice(1) === word.slice(1).toLowerCase();
-  }
-
-  private capitalizeFirstLetter(word: string): string {
-    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-  }
-
-  private preserveMixedCase(original: string, translated: string): string {
-    // Простейшая реализация - сохраняем только первую букву
-    return this.capitalizeFirstLetter(translated);
-  }
-
-  private reconstructPhrase(original: string, translatedWords: string[]): string {
-    // Восстанавливаем оригинальные пробелы и пунктуацию
-    const originalParts = original.split(/(\s+)/);
-    let result = '';
-    
-    for (let i = 0; i < Math.min(originalParts.length, translatedWords.length); i++) {
-        result += translatedWords[i] + (originalParts[i].match(/\s+$/) || '');
-    }
-    
-    return result;
-  }
-
-  private fixFinalPunctuation(original: string, translated: string): string {
-    // Сохраняем пунктуацию конца предложения
-    const lastChar = original.trim().slice(-1);
-    if (['!', '?', '.'].includes(lastChar)) {
-        return translated.replace(/[!?.]*$/, '') + lastChar;
-    }
-    return translated;
+        return translatedText;
+      }),
+      catchError(error => {
+        console.error('Translation error', error);
+        return of(cleanedText);
+      })
+    );
   }
 
   // Цензура
   censorText(text: string): string {
-    if (!isPlatformBrowser(this.platformId)) return text;
-    const badwords = BAD_WORDS[this.currentLanguageSubject.value as keyof typeof BAD_WORDS] || [];
+    const badwords: string[] = BAD_WORDS;
 
     return badwords.reduce((censored, pattern) => {
       const regex = new RegExp(pattern, 'gi');
@@ -174,8 +107,6 @@ export class LanguageService implements OnDestroy {
 
   // Загрузка переводов
   private loadTranslations(lang: string): void {
-    if (!isPlatformBrowser(this.platformId)) return;
-
     if (this.translationSub) {
       this.translationSub.unsubscribe();
     }

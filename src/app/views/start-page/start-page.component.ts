@@ -32,4 +32,12 @@ export class StartPageComponent {
   toggleLanguage(): void {
     this.languageService.toggleLanguage();
   }
+
+  get currentLanguage(): string {
+    return this.languageService.getCurrentLanguage();
+  }
+
+  translate(key: string): string {
+    return this.languageService.translate(key);
+  }
 }

@@ -35,5 +35,7 @@
   "SEND_BUTTON": "Send",
   "UNKNOWN_USER": "Unknown",
   "PROFILE": "Profile",
-  "PASSWORD_CHANGED_SUCCESS": "Password changed successfully"
+  "PASSWORD_CHANGED_SUCCESS": "Password changed successfully",
+  "PASSWORDS_DO_NOT_MATCH": "The passwords do not match",
+  "PASSWORD_CHANGE_ERROR": "The current password is entered incorrectly"
 }

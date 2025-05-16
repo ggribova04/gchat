@@ -1,79 +1,64 @@
 <section class="auth-modal-overlay">
   <div class="auth-modal">
-      <button class="close-btn" (click)="onClose()">{{ languageService.translate('CLOSE') }}</button>
-  
-      <div class="tabs">
-          <button [class.active]="mode === 'login'" (click)="switchMode('login')">
-              {{ languageService.translate('LOGIN') }}
-          </button>
-          <button [class.active]="mode === 'register'" (click)="switchMode('register')">
-              {{ languageService.translate('REGISTER') }}
-          </button>
-      </div>
+    <button class="close-btn" (click)="onClose()">{{ translate('CLOSE') }}</button>
 
-      <div class="divider-line"></div>
+    <div class="tabs">
+      <button [class.active]="mode === 'login'" (click)="switchMode('login')">
+        {{ translate('LOGIN') }}
+      </button>
+      <button [class.active]="mode === 'register'" (click)="switchMode('register')">
+        {{ translate('REGISTER') }}
+      </button>
+    </div>
 
-      @if (mode === 'login') {
-          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form">
-              <section class="input-container">
-                  <div class="input">
-                      <img src="../../assets/icons/fullName.svg" [alt]="languageService.translate('USERNAME')" class="input-icon">
-                      <input formControlName="userName" 
-                             [placeholder]="languageService.translate('USERNAME')" 
-                             type="text">
-                  </div>
-                  <div class="input">
-                      <img src="../../assets/icons/password.svg" [alt]="languageService.translate('PASSWORD')" class="input-icon">
-                      <input formControlName="password" 
-                             [placeholder]="languageService.translate('PASSWORD')" 
-                             type="password">
-                  </div>
-                  <div *ngIf="errorMessage" class="error-message">
-                      {{ errorMessage }}
-                  </div>
-              </section>
-              <button type="submit" [disabled]="loginForm.invalid">
-                  {{ languageService.translate('SUBMIT_LOGIN') }}
-              </button>
-          </form>
-      }
-      
-      @if (mode === 'register') {
-          <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="auth-form">
-              <section class="input-container">
-                  <div class="input">
-                      <img src="../../assets/icons/fullName.svg" [alt]="languageService.translate('NICKNAME_AUTH')" class="input-icon">
-                      <input formControlName="nickName" 
-                             [placeholder]="languageService.translate('NICKNAME_AUTH')" 
-                             type="text">
-                  </div>
-                  <div class="input">
-                      <img src="../../assets/icons/userName.svg" [alt]="languageService.translate('USERNAME')" class="input-icon">
-                      <input formControlName="userName" 
-                             [placeholder]="languageService.translate('USERNAME')" 
-                             type="text">
-                  </div>
-                  <div class="input">
-                      <img src="../../assets/icons/password.svg" [alt]="languageService.translate('PASSWORD')" class="input-icon">
-                      <input formControlName="password" 
-                             [placeholder]="languageService.translate('PASSWORD')" 
-                             type="password">
-                  </div>
-                  <div class="input">
-                      <img src="../../assets/icons/password.svg" [alt]="languageService.translate('CONFIRM_PASSWORD')" class="input-icon">
-                      <input formControlName="confirmPassword" 
-                             [placeholder]="languageService.translate('CONFIRM_PASSWORD')" 
-                             type="password">
-                  </div>
-                  <div *ngIf="errorMessage" class="error-message">
-                      {{ errorMessage }}
-                  </div>
-              </section>
-              <button type="submit" [disabled]="registerForm.invalid">
-                  {{ languageService.translate('SUBMIT_REGISTER') }}
-              </button>
-          </form>
-      }
-      <div class="divider-line"></div>
+    <div class="divider-line"></div>
+
+    <form *ngIf="mode === 'login'" [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form">
+      <section class="input-container">
+        <div class="input">
+          <img src="../../assets/icons/fullName.svg" [alt]="translate('USERNAME')" class="input-icon" />
+          <input formControlName="userName" [placeholder]="translate('USERNAME')" type="text" />
+        </div>
+        <div class="input">
+          <img src="../../assets/icons/password.svg" [alt]="translate('PASSWORD')" class="input-icon" />
+          <input formControlName="password" [placeholder]="translate('PASSWORD')" type="password" />
+        </div>
+        <div *ngIf="errorMessage" class="error-message">
+          {{ errorMessage }}
+        </div>
+      </section>
+      <button type="submit" [disabled]="loginForm.invalid">
+        {{ translate('SUBMIT_LOGIN') }}
+      </button>
+    </form>
+
+    <form *ngIf="mode === 'register'" [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="auth-form">
+      <section class="input-container">
+        <div class="input">
+          <img src="../../assets/icons/fullName.svg" [alt]="translate('NICKNAME_AUTH')" class="input-icon" />
+          <input formControlName="nickName" [placeholder]="translate('NICKNAME_AUTH')" type="text" />
+        </div>
+        <div class="input">
+          <img src="../../assets/icons/userName.svg" [alt]="translate('USERNAME')" class="input-icon" />
+          <input formControlName="userName" [placeholder]="translate('USERNAME')" type="text" />
+        </div>
+        <div class="input">
+          <img src="../../assets/icons/password.svg" [alt]="translate('PASSWORD')" class="input-icon" />
+          <input formControlName="password" [placeholder]="translate('PASSWORD')" type="password" />
+        </div>
+        <div class="input">
+          <img src="../../assets/icons/password.svg" [alt]="translate('CONFIRM_PASSWORD')" class="input-icon" />
+          <input formControlName="confirmPassword" [placeholder]="translate('CONFIRM_PASSWORD')" type="password" />
+        </div>
+        <div *ngIf="errorMessage" class="error-message">
+          {{ errorMessage }}
+        </div>
+      </section>
+      <button type="submit" [disabled]="registerForm.invalid">
+        {{ translate('SUBMIT_REGISTER') }}
+      </button>
+    </form>
+
+    <div class="divider-line"></div>
   </div>
 </section>

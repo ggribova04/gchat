@@ -9,5 +9,14 @@
     "target": "http://localhost:5046",
     "secure": false,
     "changeOrigin": true
+    },
+
+    "/translate-api": {
+    "target": "https://api.mymemory.translated.net",
+    "changeOrigin": true,
+    "secure": false,
+    "pathRewrite": {
+      "^/translate-api": ""
     }
+  }
 }

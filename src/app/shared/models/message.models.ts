@@ -7,4 +7,5 @@ export interface Message {
   originalLanguage?: string;
   photoUrl?: string;
   nickName?: string;
+  isTranslated?: boolean;
 }

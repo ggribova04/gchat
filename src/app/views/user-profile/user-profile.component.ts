@@ -38,7 +38,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   isPasswordModalOpen = false;
   selectedFile: File | null = null;
 
-  private subscriptions: Subscription[] = [];
+  private subscription = new Subscription();
 
   constructor(
     private userService: UserService,
@@ -55,7 +55,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
+    this.subscription.unsubscribe();
   }
 
   // Загрузка профиля
@@ -92,7 +92,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       error: (err) => console.error('Load profile error', err)
     });
     
-    this.subscriptions.push(sub);
+    this.subscription.add(sub);
   }
 
   // Управление редактированием никнейма
@@ -106,11 +106,9 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     const { nickName, theme, language } = this.profileForm.value;
 
     // Отправляем на сервер
-    const sub1 = this.userService.updateNickName({ newNickName: nickName }).subscribe();
-    const sub2 = this.userService.updateTheme({ theme }).subscribe();
-    const sub3 = this.userService.updateLanguage({ language }).subscribe();
-    
-    this.subscriptions.push(sub1, sub2, sub3);
+    this.subscription.add(this.userService.updateNickName({ newNickName: nickName }).subscribe());
+    this.subscription.add(this.userService.updateTheme({ theme }).subscribe());
+    this.subscription.add(this.userService.updateLanguage({ language }).subscribe());
 
     // Убираем возможность редактирования поля "Никнейм"
     this.isEditing = false;
@@ -136,7 +134,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         error: (err) => console.error('Upload avatar error', err)
       });
       
-      this.subscriptions.push(sub);
+      this.subscription.add(sub);
     }
   }
 
@@ -146,7 +144,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       error: (err) => console.error('Remove avatar error', err)
     });
     
-    this.subscriptions.push(sub);
+    this.subscription.add(sub);
   }
 
   // Слушатель языка
@@ -163,11 +161,11 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       
       // Отправка на сервер
       const updateSub = this.userService.updateLanguage({ language: lang }).subscribe();
-      this.subscriptions.push(updateSub);
+      this.subscription.add(updateSub);
     });
     
     if (sub) {
-      this.subscriptions.push(sub);
+      this.subscription.add(sub);
     }
   }
 
@@ -183,12 +181,28 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       }
       
       const updateSub = this.userService.updateTheme({ theme }).subscribe();
-      this.subscriptions.push(updateSub);
+      this.subscription.add(updateSub);
     });
     
     if (sub) {
-      this.subscriptions.push(sub);
+      this.subscription.add(sub);
     }
+  }
+
+  get isUserLoggedIn(): boolean {
+    return this.authService.isLoggedIn();
+  }
+
+  get translation() {
+    return this.languageService;
+  }
+
+  logout(): void {
+    this.authService.logout();
+  }
+
+  translate(key: string): string {
+    return this.languageService.translate(key);
   }
 
   // Переход на главный экран

@@ -35,5 +35,7 @@
   "SEND_BUTTON": "Отправить",
   "UNKNOWN_USER": "Без имени",
   "PROFILE": "Личный кабинет",
-  "PASSWORD_CHANGED_SUCCESS": "Пароль успешно изменен"
+  "PASSWORD_CHANGED_SUCCESS": "Пароль успешно изменен",
+  "PASSWORDS_DO_NOT_MATCH": "Пароли не совпадают",
+  "PASSWORD_CHANGE_ERROR": "Текущий пароль введен неверно"
 }

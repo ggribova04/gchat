@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewChecked, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, OnDestroy, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -16,7 +16,7 @@ import { LanguageService } from '../../shared/services/language.service';
   templateUrl: './main-page.component.html',
   styleUrls: ['./main-page.component.scss']
 })
-export class MainPageComponent implements OnInit, AfterViewChecked, OnDestroy {
+export class MainPageComponent implements AfterViewInit, OnInit, OnDestroy {
   @ViewChild('messageContainer') private messageContainer!: ElementRef;
   @ViewChild('messageInput') messageInput!: ElementRef<HTMLTextAreaElement>;
   
@@ -28,7 +28,7 @@ export class MainPageComponent implements OnInit, AfterViewChecked, OnDestroy {
 
   private shouldScrollToBottom = true;
 
-  private subscriptions: Subscription[] = [];
+  private subscription = new Subscription();
   private scrollListener?: () => void;
 
   constructor(
@@ -44,21 +44,27 @@ export class MainPageComponent implements OnInit, AfterViewChecked, OnDestroy {
     this.userId = this.authService.getUserIdFromLocalStorage();
     this.loadMessages();
     this.setupScrollListener();
+
+    // Подписка на SignalR
+    const signalRSub = this.chatService.getRealTimeMessages().subscribe((message) => {
+      this.messages.push({
+        ...message,
+        displayMessage: message.displayMessage || message.message
+      });
+      this.scrollToBottomAfterRender();
+    });
+
+    this.subscription.add(signalRSub);
   }
 
   ngAfterViewInit() {
-    this.adjustTextareaHeight();
-  }
-
-  ngAfterViewChecked() {
     if (this.shouldScrollToBottom) {
       this.scrollToBottom();
     }
   }
 
   ngOnDestroy() {
-    // Отписываемся от всех подписок
-    this.subscriptions.forEach(sub => sub.unsubscribe());
+    this.subscription.unsubscribe();
     
     // Удаляем слушатель скролла
     if (this.scrollListener && this.messageContainer?.nativeElement) {
@@ -75,29 +81,24 @@ export class MainPageComponent implements OnInit, AfterViewChecked, OnDestroy {
       },
       (error) => console.error('Error loading messages', error)
     );
-    this.subscriptions.push(sub);
+    this.subscription.add(sub);
   }
 
   // Отправка сообщения
   sendMessage(): void {
-    const trimmedMessage = this.messageText.trim(); // Удаляем пробелы в начале и конце
-    
+    const trimmedMessage = this.messageText.trim();
+
     if (trimmedMessage) {
-      // Сохраняем оригинальный текст с переносами
       const newMessage: Message = {
         id: this.id,
         userId: this.userId,
-        message: trimmedMessage, // Отправляем очищенный текст
+        message: trimmedMessage,
         originalMessage: this.currentLanguage,
-        displayMessage: trimmedMessage // Для отображения
+        displayMessage: trimmedMessage
       };
-
+      
       const sub = this.chatService.sendMessage(newMessage).subscribe({
-        next: (data) => {
-          this.messages.push({
-            ...data,
-            displayMessage: data.message
-          });
+        next: () => {
           this.messageText = '';
           this.scrollToBottomAfterRender();
           this.resetTextareaHeight();
@@ -106,7 +107,7 @@ export class MainPageComponent implements OnInit, AfterViewChecked, OnDestroy {
           console.error('Error send message', error);
         }
       });
-      this.subscriptions.push(sub);
+      this.subscription.add(sub);
     }
   }
 
@@ -155,14 +156,6 @@ export class MainPageComponent implements OnInit, AfterViewChecked, OnDestroy {
     }, 0);
   }
 
-  // Настраиваем высоту textarea
-  adjustTextareaHeight(): void {
-    if (this.messageInput?.nativeElement) {
-      const textarea = this.messageInput.nativeElement;
-      textarea.style.height = 'auto';
-    }
-  }
-
   // Сбрасываем высоту
   private resetTextareaHeight(): void {
     if (this.messageInput?.nativeElement) {
@@ -173,5 +166,17 @@ export class MainPageComponent implements OnInit, AfterViewChecked, OnDestroy {
   // Переход в лк юзера
   goUserProfile(){
     this.router.navigate(['/profile']);
+  }
+
+  get isLoggedIn(): boolean {
+    return this.authService.isLoggedIn();
+  }
+
+  logout(): void {
+    this.authService.logout();
+  }
+
+  translate(key: string): string {
+    return this.languageService.translate(key);
   }
 }

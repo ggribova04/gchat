@@ -1,5 +1,4 @@
-import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 export type AppTheme = 'light' | 'dark';
@@ -10,19 +9,15 @@ export type AppTheme = 'light' | 'dark';
 export class ThemeService {
   private currentThemeSubject = new BehaviorSubject<AppTheme>('light');
   currentTheme$ = this.currentThemeSubject.asObservable();
-  private readonly isBrowser: boolean;
 
-  constructor(@Inject(PLATFORM_ID) platformId: Object) {
-    this.isBrowser = isPlatformBrowser(platformId);
+  constructor() {
     this.initialize();
   }
 
   private initialize(): void {
-    if (this.isBrowser) {
-      const theme = this.detectTheme();
-      this.apply(theme);
-      this.currentThemeSubject.next(theme);
-    }
+    const theme = this.detectTheme();
+    this.apply(theme);
+    this.currentThemeSubject.next(theme);
   }
 
   private detectTheme(): AppTheme {
@@ -46,8 +41,6 @@ export class ThemeService {
   }
 
   setTheme(theme: AppTheme): void {
-    if (!this.isBrowser) return;
-    
     this.apply(theme);
     this.currentThemeSubject.next(theme);
     
@@ -81,8 +74,6 @@ export class ThemeService {
   }
 
   updateThemeFromUserData(userData: any): void {
-    if (!this.isBrowser) return;
-    
     const theme = userData?.theme === 'dark' ? 'dark' : 'light';
     this.setTheme(theme);
   }

@@ -1,26 +1,26 @@
 <header>
   <button (click)="goBack()">
-    <img src="../../assets/undo.svg" [alt]="languageService.translate('BACK')" />
+    <img src="../../assets/undo.svg" [alt]="translate('BACK')" />
   </button>
-  <img class="logo" src="../../assets/logo.svg" [alt]="languageService.translate('LOGO')" />
-  <button *ngIf="authService.isLoggedIn()" (click)="authService.logout()">
-    <img src="../../assets/exit.svg" [alt]="languageService.translate('LOGOUT')">
+  <img class="logo" src="../../assets/logo.svg" [alt]="translate('LOGO')" />
+  <button *ngIf="isUserLoggedIn" (click)="logout()">
+    <img src="../../assets/exit.svg" [alt]="translate('LOGOUT')" />
   </button>
 </header>
-  
+
 <main>
   <section class="user-info-section">
     <header>
       <button *ngIf="!isEditing" class="edit-button" (click)="enableEditing()">
-        <img src="../../assets/edit.svg" [alt]="languageService.translate('EDIT_PROFILE')" />
+        <img src="../../assets/edit.svg" [alt]="translate('EDIT_PROFILE')" />
       </button>
     </header>
 
     <section class="name-section">
-      <img [src]="user.settings.photoUrl || '/images/default_photo.png'" [alt]="languageService.translate('AVATAR')" class="user-photo"/>
+      <img [src]="user.settings.photoUrl || '/images/default_photo.png'" [alt]="translate('AVATAR')" class="user-photo" />
       <div *ngIf="isEditing" class="file-upload-wrapper">
         <label class="file-upload-button">
-          {{ languageService.translate('CHOOSE_PHOTO') }}
+          {{ translate('CHOOSE_PHOTO') }}
           <input 
             type="file" 
             accept="image/*" 
@@ -28,16 +28,16 @@
             class="file-input"
           >
         </label>
-      
+
         <button class="file-upload-button" (click)="removeAvatar()">
-          {{ languageService.translate('REMOVE_PHOTO') }}
+          {{ translate('REMOVE_PHOTO') }}
         </button>
       </div>
       <div class="inputs">
         <form [formGroup]="profileForm">
           <div class="input-container">
-            <img src="../../assets/icons/user_black.svg" [alt]="languageService.translate('NICKNAME')" class="input-icon">
-            <input formControlName="nickName" [readonly]="!isEditing" [placeholder]="languageService.translate('NICKNAME')" />  
+            <img src="../../assets/icons/user_black.svg" [alt]="translate('NICKNAME')" class="input-icon">
+            <input formControlName="nickName" [readonly]="!isEditing" [placeholder]="translate('NICKNAME')" />  
           </div>
         </form>
       </div>
@@ -48,35 +48,35 @@
     <section class="settings-section">
       <div class="inputs">
         <form [formGroup]="profileForm">
-          <label>{{ languageService.translate('THEME') }}:</label>
+          <label>{{ translate('THEME') }}:</label>
           <div class="input-container">
-            <img src="../../assets/icons/theme_black.svg" [alt]="languageService.translate('THEME')" class="input-icon">
+            <img src="../../assets/icons/theme_black.svg" [alt]="translate('THEME')" class="input-icon">
             <select formControlName="theme">
-              <option value="light">{{ languageService.translate('LIGHT_THEME') }}</option>
-              <option value="dark">{{ languageService.translate('DARK_THEME') }}</option>
+              <option value="light">{{ translate('LIGHT_THEME') }}</option>
+              <option value="dark">{{ translate('DARK_THEME') }}</option>
             </select>
           </div>
-          <label>{{ languageService.translate('LANGUAGE') }}:</label>
+          <label>{{ translate('LANGUAGE') }}:</label>
           <div class="input-container">
-            <img src="../../assets/icons/language_black.svg" [alt]="languageService.translate('LANGUAGE')" class="input-icon">
+            <img src="../../assets/icons/language_black.svg" [alt]="translate('LANGUAGE')" class="input-icon">
             <select formControlName="language">
-              <option value="ru">{{ languageService.translate('RUSSIAN') }}</option>
-              <option value="en">{{ languageService.translate('ENGLISH') }}</option>
+              <option value="ru">{{ translate('RUSSIAN') }}</option>
+              <option value="en">{{ translate('ENGLISH') }}</option>
             </select>
           </div>
         </form>
       </div>
       
       <button *ngIf="isEditing" (click)="isPasswordModalOpen = true" class="change-password-button">
-        {{ languageService.translate('CHANGE_PASSWORD') }}
+        {{ translate('CHANGE_PASSWORD') }}
       </button>
     </section>
-    
+
     <div class="divider-line" *ngIf="isEditing"></div>
 
     <div class="button-section">
       <button *ngIf="isEditing" (click)="saveChanges()">
-        {{ languageService.translate('SAVE') }}
+        {{ translate('SAVE') }}
       </button>
     </div>
   </section>

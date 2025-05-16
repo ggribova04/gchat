@@ -1,10 +1,9 @@
-import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { ThemeService } from '../services/theme.service';
-import { isPlatformBrowser } from '@angular/common';
 import { LanguageService } from './language.service';
-import { lastValueFrom } from 'rxjs';
+import { Observable } from 'rxjs';
 import { environment } from '../../../enviroments/enviroment';
 
 @Injectable({
@@ -12,22 +11,16 @@ import { environment } from '../../../enviroments/enviroment';
 })
 export class AuthService {
   private apiUrl = `${environment.apiUrl}/api/auth`;
-  private isBrowser: boolean;
 
   constructor(
     private router: Router,
     private http: HttpClient, 
     private themeService: ThemeService,
-    private languageService: LanguageService,
-    @Inject(PLATFORM_ID) platformId: Object
-  ) {
-    this.isBrowser = isPlatformBrowser(platformId);
-  }
+    private languageService: LanguageService
+  ) {}
 
   // Сохранение данных аутентификации
   saveAuthData(authData: any): void {
-    if (!this.isBrowser) return;
-
     try {
       const theme = authData.settings?.theme || authData.theme || 'light';
       const userData = {
@@ -54,14 +47,11 @@ export class AuthService {
 
   // Проверка авторизации
   isLoggedIn(): boolean {
-    if (!this.isBrowser) return false;
     return !!localStorage.getItem('token');
   }
 
   // Выход из системы
   logout(): void {
-    if (!this.isBrowser) return;
-
     localStorage.removeItem('token');
     localStorage.removeItem('user_data');
     
@@ -70,8 +60,6 @@ export class AuthService {
 
   // Получаем ID пользователя
   getUserIdFromLocalStorage(): number {
-    if (!this.isBrowser) return 0;
-
     try {
       const userData = localStorage.getItem('user_data');
       if (!userData) return 0;
@@ -85,8 +73,6 @@ export class AuthService {
 
   // Получение всех данных пользователя
   getUserData(): any {
-    if (!this.isBrowser) return null;
-
     try {
       const userData = localStorage.getItem('user_data');
       return userData ? JSON.parse(userData) : null;
@@ -97,8 +83,6 @@ export class AuthService {
 
   // Получение языка
   getCurrentLanguage(): string {
-    if (!this.isBrowser) return 'ru';
-    
     try {
       const userData = this.getUserData();
       return userData?.settings?.language || 'ru';
@@ -108,32 +92,18 @@ export class AuthService {
   }
 
   // Авторизация
-  async login(credentials: { userName: string; password: string }): Promise<any> {
-    try {
-      const response = await lastValueFrom(
-        this.http.post<any>(`${this.apiUrl}/login`, credentials)
-      );
-      return response;
-    } catch (error) {
-      throw error;
-    }
+  login(credentials: { userName: string; password: string }): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/login`, credentials);
   }
 
   // Регистрация
-  async register(userData: {
+  register(userData: {
     nickName: string;
     userName: string;
     password: string;
     confirmPassword: string;
     language: string;
-  }): Promise<any> {
-    try {
-      const response = await lastValueFrom(
-        this.http.post<any>(`${this.apiUrl}/register`, userData)
-      );
-      return response;
-    } catch (error) {
-      throw error;
-    }
+  }): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/register`, userData);
   }
 }
